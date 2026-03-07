@@ -1,0 +1,1327 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lexi Langue — Armand Legros</title>
+    <meta name="description" content="Détail du projet Lexi Langue — UX/UI Design par Armand Legros." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@700&display=swap" rel="stylesheet" />
+    <style>
+      /* ================================================
+         VARIABLES & RESET
+      ================================================ */
+      :root {
+        --black:    #000000;
+        --white:    #ffffff;
+        --purple:   #5d3fd3;
+        --yellow:   #dfff00;
+        --pink:     #ff69b4;
+        --dark:     #18181b;
+        --gray-800: #27272a;
+        --gray-600: #52525b;
+        --gray-500: #71717a;
+        --gray-400: #a1a1aa;
+        --font-d:   "Bebas Neue", sans-serif;
+        --font-m:   "Space Mono", monospace;
+        --font-c:   "Caveat", cursive;
+        /* per-project accent — override per project */
+        --accent:   var(--purple);
+      }
+
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
+      body { background: var(--black); color: var(--white); font-family: var(--font-m); overflow-x: hidden; cursor: none; }
+      a, button { cursor: none; }
+      img { display: block; max-width: 100%; }
+
+      /* ================================================
+         CURSOR
+      ================================================ */
+      #cursor {
+        position: fixed; width: 10px; height: 10px;
+        background: var(--yellow); border-radius: 50%;
+        pointer-events: none; z-index: 9999;
+        transform: translate(-50%,-50%);
+        transition: width .2s, height .2s;
+        mix-blend-mode: difference;
+      }
+      #cursor-ring {
+        position: fixed; width: 38px; height: 38px;
+        border: 2px solid var(--yellow); border-radius: 50%;
+        pointer-events: none; z-index: 9998;
+        transform: translate(-50%,-50%);
+        mix-blend-mode: difference;
+      }
+
+      /* ================================================
+         REVEAL
+      ================================================ */
+      .reveal {
+        opacity: 0; transform: translateY(28px);
+        transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+      }
+      .reveal.in { opacity: 1; transform: translateY(0); }
+      .d1 { transition-delay: .08s; }
+      .d2 { transition-delay: .16s; }
+      .d3 { transition-delay: .24s; }
+      .d4 { transition-delay: .32s; }
+
+      /* ================================================
+         NAV — same as other pages
+      ================================================ */
+      #nav {
+        position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 16px 48px;
+        background: var(--black); border-bottom: 4px solid var(--white);
+        transition: padding .3s ease;
+      }
+      #nav.compact { padding: 10px 48px; }
+
+      .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+      .nav-logo-box {
+        width: 44px; height: 44px; background: var(--purple);
+        border: 2px solid var(--white);
+        display: flex; align-items: center; justify-content: center;
+        font-family: var(--font-d); font-size: 20px; color: var(--white); flex-shrink: 0;
+      }
+      .nav-logo-title { display: flex; flex-direction: column; gap: 2px; }
+      .nav-logo-text { font-family: var(--font-d); font-size: 26px; color: var(--white); line-height: 1; text-transform: uppercase; }
+      .nav-logo-name { font-size: 9px; color: var(--white); opacity: .5; text-transform: uppercase; letter-spacing: 2px; }
+      .nav-links { display: flex; list-style: none; gap: 32px; }
+      .nav-links a {
+        font-weight: 700; font-size: 11px; color: var(--white);
+        text-decoration: none; text-transform: uppercase; letter-spacing: 1px;
+        transition: color .2s;
+      }
+      .nav-links a:hover { color: var(--yellow); }
+      .nav-cta {
+        background: var(--pink); border: 3px solid var(--black); box-shadow: 4px 4px 0 var(--black);
+        padding: 10px 20px; font-family: var(--font-m); font-weight: 700; font-size: 11px;
+        color: var(--black); text-decoration: none; text-transform: uppercase; letter-spacing: .5px;
+        transition: transform .15s, box-shadow .15s;
+      }
+      .nav-cta:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--black); }
+
+      /* ================================================
+         HERO
+      ================================================ */
+      .pd-hero {
+        margin-top: 76px;
+        min-height: calc(100vh - 76px);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        background: var(--black);
+      }
+
+      /* LEFT */
+      .pd-hero-left {
+        padding: 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 32px;
+      }
+
+      .pd-back {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-size: 10px; font-weight: 700; color: var(--gray-500);
+        text-decoration: none; text-transform: uppercase; letter-spacing: 1.5px;
+        transition: color .2s, gap .2s;
+        align-self: flex-start;
+      }
+      .pd-back:hover { color: var(--yellow); gap: 12px; }
+
+      .pd-hero-meta {
+        display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      }
+      .pd-category {
+        font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+        color: var(--accent); border: 1.5px solid var(--accent); padding: 4px 10px;
+      }
+      .pd-year {
+        font-size: 10px; color: var(--gray-500); letter-spacing: 1px;
+      }
+
+      .pd-title {
+        font-family: var(--font-d);
+        font-size: clamp(72px, 9vw, 140px);
+        color: var(--white);
+        text-transform: uppercase;
+        line-height: .9;
+        letter-spacing: -.01em;
+      }
+      .pd-title span { color: var(--white); }
+
+      .pd-hero-desc {
+        font-size: 12px; color: var(--gray-400);
+        line-height: 1.8; max-width: 480px;
+        text-transform: uppercase; letter-spacing: .5px;
+      }
+
+      .pd-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+      .pd-tag {
+        font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+        color: var(--gray-600); border: 1px solid var(--gray-800); padding: 4px 10px;
+        transition: color .2s, border-color .2s;
+      }
+      .pd-tag:hover { color: var(--white); border-color: var(--white); }
+
+      .pd-hero-actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+
+      .pd-cta-primary {
+        display: inline-flex; align-items: center; gap: 8px;
+        background: var(--accent); border: 3px solid var(--black);
+        box-shadow: 6px 6px 0 var(--black);
+        padding: 14px 28px; font-family: var(--font-m); font-weight: 700;
+        font-size: 11px; color: var(--black); text-decoration: none;
+        text-transform: uppercase; letter-spacing: .5px;
+        transition: transform .15s, box-shadow .15s;
+      }
+      .pd-cta-primary:hover { transform: translate(-3px,-3px); box-shadow: 9px 9px 0 var(--black); }
+
+      .pd-cta-secondary {
+        font-size: 11px; font-weight: 700; color: var(--gray-400);
+        text-decoration: none; text-transform: uppercase; letter-spacing: 1px;
+        border-bottom: 1px solid var(--gray-600);
+        transition: color .2s, border-color .2s;
+      }
+      .pd-cta-secondary:hover { color: var(--white); border-color: var(--white); }
+
+      /* RIGHT */
+      .pd-hero-right {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0;
+        padding: 80px;
+        overflow: hidden;
+      }
+
+      .pd-hero-img-wrap {
+        position: relative;
+        width: 100%;
+        max-width: 520px;
+      }
+
+      /* Project info grid — under the hero image */
+      .pd-hero-infos {
+        width: 100%;
+        max-width: 520px;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        border: 1px solid var(--gray-800);
+        border-top: none;
+      }
+      .pd-hi-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 16px 14px;
+        border-right: 1px solid var(--gray-800);
+        min-width: 0;
+      }
+      .pd-hi-item:last-child { border-right: none; }
+      .pd-hi-key {
+        font-size: 10px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 1px; color: var(--gray-600);
+      }
+      .pd-hi-val {
+        font-size: 12px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: .3px; color: var(--white);
+        word-break: break-word;
+      }
+
+      .pd-hero-img-frame {
+        border: 4px solid var(--accent);
+        box-shadow: 14px 14px 0 var(--accent);
+        overflow: hidden;
+        aspect-ratio: 4/3;
+        background: var(--gray-800);
+      }
+
+      .pd-hero-img-frame img {
+        width: 100%; height: 100%; object-fit: cover;
+        display: block;
+        transition: transform .6s ease;
+      }
+      .pd-hero-img-frame:hover img { transform: scale(1.04); }
+
+      .pd-hero-img-placeholder {
+        width: 100%; height: 100%;
+        display: flex; align-items: center; justify-content: center;
+        font-family: var(--font-d); font-size: 80px; color: var(--gray-600);
+      }
+
+
+      /* ================================================
+         CONTEXT BAND
+      ================================================ */
+      .pd-context-band {
+        background: var(--white);
+        border-top: 4px solid var(--black);
+        border-bottom: 4px solid var(--black);
+        padding: 36px 80px;
+        overflow: hidden;
+      }
+
+      .pd-context-inner {
+        display: flex; align-items: center; gap: 0;
+      }
+
+      .pd-context-label {
+        font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+        color: var(--gray-600); white-space: nowrap; margin-right: 48px;
+        flex-shrink: 0;
+      }
+
+      .pd-context-quote {
+        font-family: var(--font-m); font-style: italic; font-weight: 700;
+        font-size: clamp(16px, 2vw, 22px);
+        color: var(--black);
+        line-height: 1.4;
+      }
+
+      /* ================================================
+         MAIN CONTENT SECTION — yellow brutalist
+      ================================================ */
+      .pd-main {
+        background: var(--yellow);
+        padding: 80px;
+        border-bottom: 4px solid var(--black);
+      }
+
+      .pd-main-grid {
+        display: grid;
+        grid-template-columns: 1fr 130px;
+        gap: 0;
+        align-items: stretch;
+      }
+
+      /* --- WHITE CARDS (left column) — single card visible at a time --- */
+      .pd-cards-col {
+        position: relative;
+        min-height: 320px;
+      }
+
+      .pd-white-card {
+        background: var(--white);
+        border: 3px solid var(--black);
+        box-shadow: 8px 8px 0 var(--black);
+        padding: 40px;
+        display: none;
+        opacity: 0;
+      }
+
+      .pd-white-card.active {
+        display: block;
+        opacity: 1;
+        animation: briefFadeIn .4s cubic-bezier(.16,1,.3,1) forwards;
+      }
+
+      @keyframes briefFadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      /* --- BRIEF NAV — right column on yellow bg --- */
+      .pd-brief-nav {
+        display: flex;
+        flex-direction: column;
+        align-self: stretch;
+        border-left: 3px solid var(--black);
+      }
+
+      .pd-brief-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        flex: 1;
+        width: 100%;
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid rgba(0,0,0,.15);
+        padding: 20px 12px;
+        cursor: none;
+        position: relative;
+        transition: background .15s;
+      }
+      .pd-brief-btn:last-child { border-bottom: none; }
+
+      /* Active accent bar on left */
+      .pd-brief-btn::before {
+        content: "";
+        position: absolute;
+        left: -3px; top: 0; bottom: 0;
+        width: 0;
+        background: var(--black);
+        transition: width .15s;
+      }
+      .pd-brief-btn.active::before { width: 4px; }
+      .pd-brief-btn.active { background: rgba(0,0,0,.08); }
+
+      .pd-brief-num {
+        font-family: var(--font-d);
+        font-size: 44px;
+        color: rgba(0,0,0,.18);
+        line-height: 1;
+        transition: color .2s;
+        text-align: center;
+      }
+      .pd-brief-name {
+        font-size: 7px; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1.5px;
+        color: rgba(0,0,0,.3);
+        text-align: center;
+        transition: color .2s;
+      }
+
+      .pd-brief-btn:hover .pd-brief-num,
+      .pd-brief-btn.active .pd-brief-num { color: var(--black); }
+
+      .pd-brief-btn:hover .pd-brief-name,
+      .pd-brief-btn.active .pd-brief-name { color: var(--black); }
+
+      .pd-wc-label {
+        font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+        color: var(--gray-600); margin-bottom: 16px;
+        border-bottom: 1px solid rgba(0,0,0,.1); padding-bottom: 12px;
+      }
+
+      .pd-wc-title {
+        font-family: var(--font-d); font-size: clamp(36px, 4vw, 60px);
+        color: var(--black); text-transform: uppercase; line-height: .92;
+        margin-bottom: 24px;
+      }
+
+      .pd-wc-text {
+        font-size: 12px; color: var(--black); line-height: 1.9;
+        opacity: .75;
+      }
+
+      /* --- DARK INFO CARD (right column) --- */
+      .pd-info-card {
+        background: var(--black);
+        border: 3px solid var(--black);
+        box-shadow: 8px 8px 0 var(--black);
+        padding: 40px;
+        position: sticky;
+        top: 96px;
+      }
+
+      .pd-info-label {
+        font-size: 9px; font-weight: 700; letter-spacing: 2px;
+        text-transform: uppercase; color: var(--gray-600);
+        margin-bottom: 32px;
+        border-bottom: 1px solid var(--gray-800); padding-bottom: 12px;
+      }
+
+      .pd-info-list {
+        list-style: none;
+        display: flex; flex-direction: column; gap: 0;
+      }
+
+      .pd-info-item {
+        display: flex; flex-direction: column; gap: 4px;
+        padding: 20px 0;
+        border-bottom: 1px solid var(--gray-800);
+      }
+      .pd-info-item:last-child { border-bottom: none; }
+
+      .pd-info-key {
+        font-family: var(--font-d); font-size: 28px; color: var(--yellow);
+        line-height: 1; letter-spacing: .02em;
+      }
+
+      .pd-info-val {
+        font-size: 10px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 1px; color: var(--gray-400);
+      }
+
+      /* --- PINK QUOTE BANNER --- */
+      .pd-pink-banner {
+        background: var(--pink);
+        border: 3px solid var(--black);
+        box-shadow: 8px 8px 0 var(--black);
+        padding: 40px;
+        margin-top: 32px;
+        grid-column: 1 / -1;
+      }
+
+      .pd-pink-banner blockquote {
+        font-family: var(--font-m); font-style: italic; font-weight: 700;
+        font-size: clamp(18px, 2.5vw, 30px);
+        color: var(--black); line-height: 1.3;
+        text-transform: uppercase;
+      }
+
+      .pd-pink-banner cite {
+        display: block; font-style: normal; font-size: 10px;
+        letter-spacing: 1.5px; color: rgba(0,0,0,.5);
+        margin-top: 12px; font-weight: 700; text-transform: uppercase;
+      }
+
+      /* ================================================
+         GALLERY
+      ================================================ */
+      .pd-gallery {
+        background: var(--dark);
+        padding: 80px;
+        border-top: 4px solid var(--white);
+        border-bottom: 4px solid var(--white);
+      }
+
+      .pd-section-head {
+        display: flex; align-items: baseline; justify-content: space-between;
+        margin-bottom: 48px;
+      }
+
+      .pd-section-title {
+        font-family: var(--font-d); font-size: clamp(48px, 6vw, 88px);
+        color: var(--white); text-transform: uppercase; line-height: .9;
+      }
+      .pd-section-title span { color: var(--accent); }
+
+      .pd-section-count {
+        font-size: 10px; font-weight: 700; color: var(--gray-600);
+        letter-spacing: 1.5px; text-transform: uppercase;
+      }
+
+      .pd-gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 4px;
+      }
+
+      .pd-gallery-item {
+        overflow: hidden;
+        background: var(--gray-800);
+        border: 2px solid var(--gray-800);
+        transition: border-color .25s;
+        position: relative;
+      }
+      .pd-gallery-item:hover { border-color: var(--accent); }
+
+      /* Layout spans — 4 images */
+      .pd-gallery-item:nth-child(1) { grid-column: span 8; aspect-ratio: 16/9; }
+      .pd-gallery-item:nth-child(2) { grid-column: span 4; } /* stretches to row height */
+      .pd-gallery-item:nth-child(3) { grid-column: span 4; } /* stretches to row height */
+      .pd-gallery-item:nth-child(4) { grid-column: span 8; aspect-ratio: 16/9; }
+
+      /* Zoom hint on hover */
+      .pd-gallery-item { cursor: none; }
+      .pd-gallery-item::before {
+        content: "↗";
+        position: absolute; top: 12px; right: 12px;
+        width: 30px; height: 30px;
+        background: var(--accent); border: 2px solid var(--black);
+        color: var(--black); font-size: 14px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center;
+        z-index: 3; opacity: 0; transition: opacity .2s;
+        font-family: var(--font-m);
+      }
+      .pd-gallery-item:hover::before { opacity: 1; }
+
+      .pd-gallery-item img {
+        width: 100%; height: 100%; object-fit: cover;
+        transition: transform .55s ease;
+      }
+      .pd-gallery-item:hover img { transform: scale(1.05); }
+
+      .pd-gallery-placeholder {
+        width: 100%; height: 100%; min-height: 200px;
+        display: flex; align-items: center; justify-content: center;
+        font-family: var(--font-d); font-size: 20px; color: var(--gray-600);
+        letter-spacing: .05em; text-transform: uppercase;
+      }
+
+      /* Hover label */
+      .pd-gallery-item::after {
+        content: attr(data-label);
+        position: absolute; bottom: 0; left: 0; right: 0;
+        background: linear-gradient(transparent, rgba(0,0,0,.8));
+        color: var(--white); font-size: 10px; font-weight: 700;
+        letter-spacing: 1px; text-transform: uppercase;
+        padding: 20px 16px 12px;
+        opacity: 0; transition: opacity .25s;
+      }
+      .pd-gallery-item:hover::after { opacity: 1; }
+
+      /* ================================================
+         LIGHTBOX
+      ================================================ */
+      #lightbox {
+        position: fixed; inset: 0; z-index: 9000;
+        background: rgba(0,0,0,.94);
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; pointer-events: none;
+        transition: opacity .3s ease;
+      }
+      #lightbox.open { opacity: 1; pointer-events: all; }
+
+      .lb-inner {
+        position: relative;
+        display: flex; flex-direction: column; align-items: center;
+        gap: 16px;
+        max-width: 90vw;
+      }
+
+      .lb-img-wrap {
+        position: relative;
+        border: 3px solid var(--accent);
+        box-shadow: 7px 7px 0 var(--accent);
+        background: var(--gray-800);
+        overflow: hidden;
+        transition: box-shadow .2s;
+      }
+      #lightbox.open .lb-img-wrap {
+        animation: lbIn .35s cubic-bezier(.16,1,.3,1) forwards;
+      }
+      @keyframes lbIn {
+        from { opacity: 0; transform: scale(.93) translateY(12px); }
+        to   { opacity: 1; transform: scale(1)   translateY(0); }
+      }
+
+      .lb-img-wrap img {
+        display: block;
+        max-width: 88vw; max-height: 78vh;
+        width: auto; height: auto;
+        object-fit: contain;
+      }
+
+      .lb-caption {
+        font-size: 9px; font-weight: 700;
+        letter-spacing: 2px; text-transform: uppercase;
+        color: var(--gray-500); text-align: center;
+      }
+
+      .lb-counter {
+        font-family: var(--font-d); font-size: 22px;
+        color: var(--accent); line-height: 1;
+      }
+
+      /* Close button */
+      .lb-close {
+        position: fixed; top: 28px; right: 28px;
+        width: 46px; height: 46px;
+        background: var(--black); border: 2px solid var(--white);
+        color: var(--white); font-size: 18px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center;
+        cursor: none; z-index: 9001;
+        transition: background .15s, transform .15s, box-shadow .15s;
+        font-family: var(--font-m); line-height: 1;
+      }
+      .lb-close:hover {
+        background: var(--accent); border-color: var(--accent); color: var(--black);
+        transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--white);
+      }
+
+      /* Prev / Next arrows */
+      .lb-prev, .lb-next {
+        position: fixed; top: 50%; transform: translateY(-50%);
+        width: 52px; height: 52px;
+        background: var(--black); border: 2px solid var(--white);
+        color: var(--white); font-size: 20px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: none; z-index: 9001;
+        transition: background .15s, box-shadow .15s, transform .15s;
+        font-family: var(--font-d); letter-spacing: 0;
+      }
+      .lb-prev { left: 28px; }
+      .lb-next { right: 28px; }
+      .lb-prev:hover { background: var(--accent); border-color: var(--accent); color: var(--black); transform: translateY(-50%) translate(-2px,-2px); box-shadow: 4px 4px 0 var(--white); }
+      .lb-next:hover { background: var(--accent); border-color: var(--accent); color: var(--black); transform: translateY(-50%) translate(-2px,-2px); box-shadow: 4px 4px 0 var(--white); }
+
+      /* ================================================
+         RELATED PROJECTS
+      ================================================ */
+      .pd-related {
+        background: var(--black);
+        padding: 80px;
+      }
+
+      .pd-related-head {
+        display: flex; align-items: baseline; justify-content: space-between;
+        margin-bottom: 56px;
+      }
+
+      .pd-related-link {
+        font-size: 11px; font-weight: 700; color: var(--gray-500);
+        text-decoration: none; text-transform: uppercase; letter-spacing: 1px;
+        border-bottom: 1px solid var(--gray-800);
+        transition: color .2s, border-color .2s;
+      }
+      .pd-related-link:hover { color: var(--white); border-color: var(--white); }
+
+      /* Reuse pj-card from projets.html */
+      .pd-related-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 56px;
+      }
+
+      .pj-card {
+        border: 2px solid var(--gray-800); background: var(--dark);
+        overflow: hidden; cursor: none;
+        transition: transform .2s, box-shadow .2s, border-color .2s;
+        display: flex; flex-direction: column;
+      }
+      .pj-card:hover {
+        transform: translate(-4px,-4px);
+        box-shadow: 8px 8px 0 var(--accent, var(--purple));
+        border-color: var(--accent, var(--purple));
+      }
+      .pj-accent-strip { height: 5px; background: var(--accent, var(--purple)); flex-shrink: 0; }
+      .pj-img {
+        aspect-ratio: 4/3; background: var(--gray-800);
+        overflow: hidden; position: relative; flex-shrink: 0;
+        border-bottom: 2px solid var(--gray-800);
+      }
+      .pj-img::after {
+        content: ""; position: absolute; inset: 0;
+        background: var(--black); opacity: .28;
+        transition: opacity .35s; pointer-events: none;
+      }
+      .pj-card:hover .pj-img::after { opacity: 0; }
+      .pj-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+      .pj-card:hover .pj-img img { transform: scale(1.06); }
+      .pj-img-placeholder {
+        width: 100%; height: 100%;
+        display: flex; align-items: center; justify-content: center;
+        font-family: var(--font-d); font-size: 48px; color: var(--gray-600);
+        transition: color .3s;
+      }
+      .pj-card:hover .pj-img-placeholder { color: var(--accent, var(--purple)); }
+      .pj-body { padding: 14px 16px 16px; display: flex; flex-direction: column; flex: 1; gap: 6px; }
+      .pj-meta { display: flex; align-items: center; justify-content: space-between; }
+      .pj-type-tag {
+        font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+        color: var(--accent, var(--purple)); border: 1.5px solid var(--accent, var(--purple));
+        padding: 3px 8px; line-height: 1;
+      }
+      .pj-num { display: none; }
+      .pj-name { font-family: var(--font-d); font-size: clamp(22px, 2.2vw, 36px); color: var(--white); text-transform: uppercase; line-height: .95; }
+      .pj-desc { font-size: 11px; color: var(--gray-400); line-height: 1.5; flex: 1; }
+      .pj-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--gray-800); margin-top: 4px; }
+      .pj-year { font-size: 10px; color: var(--gray-600); letter-spacing: 1px; }
+      .pj-link {
+        font-weight: 700; font-size: 10px; color: var(--white);
+        text-decoration: none; text-transform: uppercase; letter-spacing: .08em;
+        border-bottom: 1px solid var(--gray-600);
+        transition: letter-spacing .2s, color .2s, border-color .2s;
+      }
+      .pj-link:hover { letter-spacing: .14em; color: var(--accent, var(--yellow)); border-color: var(--accent, var(--yellow)); }
+
+      /* ================================================
+         FOOTER
+      ================================================ */
+      footer {
+        background: var(--dark);
+        border-top: 4px solid var(--white);
+        padding: 64px 80px 40px;
+      }
+      .footer-main { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 48px; }
+      .footer-logo { font-family: var(--font-d); font-size: clamp(40px, 6vw, 80px); color: var(--yellow); line-height: 1; }
+      .footer-version { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 12px; }
+      .footer-links { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; }
+      .footer-links a { font-weight: 700; font-size: 11px; color: var(--gray-400); text-decoration: none; text-transform: uppercase; letter-spacing: 1px; transition: color .2s; }
+      .footer-links a:hover { color: var(--white); }
+      .footer-right { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+      .footer-status { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 1.5px; }
+      .footer-dot { width: 10px; height: 10px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e; animation: blink 2s ease-in-out infinite; }
+      @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+      .footer-bottom { border-top: 1px solid var(--gray-800); padding-top: 24px; }
+      .footer-copy { font-size: 10px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 1px; line-height: 1.8; }
+
+      /* ================================================
+         RESPONSIVE
+      ================================================ */
+      @media (max-width: 900px) {
+        #nav { padding: 10px 20px; }
+        .nav-links { display: none; }
+        .nav-logo-text { font-size: 18px; }
+        .nav-logo-box { width: 34px; height: 34px; font-size: 15px; }
+        .nav-cta { padding: 8px 14px; font-size: 10px; white-space: nowrap; }
+
+        .pd-hero { grid-template-columns: 1fr; min-height: auto; }
+        .pd-hero-left { padding: 80px 24px 40px; }
+        .pd-hero-right { padding: 40px 24px 56px; min-height: 300px; }
+
+
+        .pd-context-band { padding: 28px 24px; }
+        .pd-context-label { display: none; }
+
+        .pd-main { padding: 48px 24px; }
+        .pd-main-grid { grid-template-columns: 1fr; }
+        /* nav moves ABOVE the card on mobile */
+        .pd-brief-nav { flex-direction: row; border-left: none; border-top: none; border-bottom: 3px solid var(--black); order: -1; }
+        .pd-brief-btn { border-bottom: none; border-right: 1px solid rgba(0,0,0,.15); flex: 1; }
+        .pd-brief-btn:last-child { border-right: none; }
+        /* active accent bar at bottom, pointing toward the card */
+        .pd-brief-btn::before { left: 0; bottom: -3px; top: auto; width: 100%; height: 0; }
+        .pd-brief-btn.active::before { height: 4px; width: 100%; }
+        .pd-white-card { padding: 28px 24px; }
+        .pd-pink-banner { padding: 28px 24px; }
+        .pd-hero-infos { grid-template-columns: repeat(3, 1fr); max-width: 100%; }
+        .pd-hi-item:nth-child(3) { border-right: none; }
+        .pd-hi-item:nth-child(4), .pd-hi-item:nth-child(5) { border-top: 1px solid var(--gray-800); }
+
+        .pd-gallery { padding: 48px 24px; }
+        .pd-gallery-grid { grid-template-columns: 1fr; gap: 8px; }
+        .pd-gallery-item:nth-child(n) { grid-column: span 1; aspect-ratio: 16/9; }
+
+        .pd-related { padding: 48px 24px; }
+        .pd-related-grid { grid-template-columns: 1fr; gap: 24px; }
+
+        footer { padding: 48px 24px 32px; }
+        .footer-main { flex-direction: column; gap: 24px; align-items: flex-start; }
+      }
+    
+  /* ─────────────────────────────────────────
+     BURGER MENU (mobile ≤900px)
+  ───────────────────────────────────────── */
+  #nav-burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: auto;
+  }
+  #nav-burger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--white);
+    transition: transform .25s, opacity .25s;
+    border-radius: 1px;
+  }
+  #nav-burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  #nav-burger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  #nav-burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  #mobile-menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    z-index: 9998;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+  }
+  #mobile-menu.open { display: flex; }
+  #mob-close {
+    position: absolute;
+    top: 24px;
+    right: 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--white);
+    font-size: 32px;
+    font-family: var(--font-mono);
+    line-height: 1;
+  }
+  .mob-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+  .mob-links a {
+    font-family: var(--font-mono);
+    font-size: clamp(14px, 4.5vw, 18px);
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    transition: color .2s;
+  }
+  .mob-links a:hover { color: var(--yellow); }
+  .mob-cta-link {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--white) !important;
+    text-decoration: none;
+    border: 1.5px solid var(--white);
+    padding: 12px 28px;
+    box-shadow: 4px 4px 0 var(--white);
+    transition: transform .2s, box-shadow .2s;
+    margin-top: 8px;
+  }
+  .mob-cta-link:hover {
+    transform: translate(-2px,-2px);
+    box-shadow: 6px 6px 0 var(--white);
+  }
+  @media (max-width: 900px) {
+    #nav-burger { display: flex; }
+  }
+  </style>
+  </head>
+  <body>
+    <div id="cursor"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- ========== NAV ========== -->
+    <nav id="nav">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-box">AL</div>
+        <div class="nav-logo-title">
+          <span class="nav-logo-text">UX/UI DESIGNER</span>
+          <span class="nav-logo-name">Armand Legros</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html#about">[ QUI JE SUIS ]</a></li>
+        <li><a href="projets.html">[ MES PROJETS ]</a></li>
+        <li><a href="index.html#services">[ CE QUE JE FAIS ]</a></li>
+        <li><a href="index.html#contact">[ PARLONS ]</a></li>
+      </ul>
+      <a href="index.html#contact" class="nav-cta">Démarrer un projet</a>
+    
+      <button id="nav-burger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+
+    <!-- ───── MOBILE MENU ───── -->
+    <div id="mobile-menu" aria-hidden="true">
+      <button id="mob-close" aria-label="Fermer">&#x2715;</button>
+      <nav class="mob-links">
+        <a href="index.html#about">[ QUI JE SUIS ]</a>
+        <a href="projets.html">[ MES PROJETS ]</a>
+        <a href="index.html#services">[ CE QUE JE FAIS ]</a>
+        <a href="index.html#contact">[ PARLONS ]</a>
+      </nav>
+      <a href="index.html#contact" class="mob-cta-link">Démarrer un projet</a>
+    </div>
+
+    <!-- ========== HERO ========== -->
+    <section class="pd-hero">
+
+      <!-- LEFT: title + meta -->
+      <div class="pd-hero-left">
+        <a href="projets.html" class="pd-back reveal">← TOUS LES PROJETS</a>
+
+        <div class="pd-hero-meta reveal d1">
+          <span class="pd-category">Design d'Interface</span>
+          <span class="pd-year">2024</span>
+        </div>
+
+        <h1 class="pd-title reveal d2">
+          LEXI<br /><span>LANGUE</span>
+        </h1>
+
+        <p class="pd-hero-desc reveal d3">
+          App d'apprentissage des langues avec IA. Design UX et interface fluide
+          pour une acquisition linguistique immersive.
+        </p>
+
+        <div class="pd-tags reveal d3">
+          <span class="pd-tag">UX Design</span>
+          <span class="pd-tag">Mobile App</span>
+          <span class="pd-tag">IA</span>
+          <span class="pd-tag">Figma</span>
+        </div>
+
+        <div class="pd-hero-actions reveal d4">
+          <a href="#" class="pd-cta-primary">VOIR LE LIVE →</a>
+          <a href="#" class="pd-cta-secondary">Voir sur Dribbble</a>
+        </div>
+      </div>
+
+      <!-- RIGHT: hero image + project infos -->
+      <div class="pd-hero-right">
+        <div class="pd-hero-img-wrap reveal d2">
+          <div class="pd-hero-img-frame">
+            <img src="images/hero_website_lexi.webp" alt="Lexi Langue — Site Web" />
+          </div>
+        </div>
+        <div class="pd-hero-infos reveal d3">
+          <div class="pd-hi-item">
+            <span class="pd-hi-key">Client</span>
+            <span class="pd-hi-val" title="Lexi Technologies">Lexi Tech.</span>
+          </div>
+          <div class="pd-hi-item">
+            <span class="pd-hi-key">Rôle</span>
+            <span class="pd-hi-val">Lead UX/UI</span>
+          </div>
+          <div class="pd-hi-item">
+            <span class="pd-hi-key">Outils</span>
+            <span class="pd-hi-val" title="Figma · Framer · Maze">Figma · Framer</span>
+          </div>
+          <div class="pd-hi-item">
+            <span class="pd-hi-key">Durée</span>
+            <span class="pd-hi-val">3 mois</span>
+          </div>
+          <div class="pd-hi-item">
+            <span class="pd-hi-key">Année</span>
+            <span class="pd-hi-val">2024</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========== CONTEXT BAND ========== -->
+    <div class="pd-context-band reveal">
+      <div class="pd-context-inner">
+        <span class="pd-context-label">// BRIEF</span>
+        <p class="pd-context-quote">
+          "Rendre l'apprentissage d'une langue aussi addictif qu'un jeu vidéo —<br />
+          sans sacrifier la profondeur pédagogique."
+        </p>
+      </div>
+    </div>
+
+    <!-- ========== MAIN CONTENT — yellow section ========== -->
+    <section class="pd-main">
+      <div class="pd-main-grid">
+
+        <!-- LEFT: white content cards -->
+        <div class="pd-cards-col">
+
+          <div class="pd-white-card active" data-card="0">
+            <p class="pd-wc-label">01 — CONTEXTE</p>
+            <h2 class="pd-wc-title">LE PROBLÈME<br />À RÉSOUDRE.</h2>
+            <p class="pd-wc-text">
+              Les apps d'apprentissage existantes souffrent d'une friction énorme : trop
+              de gamification superficielle, pas assez de substance. L'utilisateur
+              abandonne après 3 semaines. Le brief demandait une interface qui respecte
+              l'intelligence de l'utilisateur tout en maintenant une progression
+              engageante sur le long terme.<br /><br />
+              L'enjeu : concevoir un système UX qui rende la difficulté progressive
+              désirable plutôt que frustrante.
+            </p>
+          </div>
+
+          <div class="pd-white-card" data-card="1">
+            <p class="pd-wc-label">02 — SOLUTION</p>
+            <h2 class="pd-wc-title">L'INTERFACE<br />COMME TERRAIN.</h2>
+            <p class="pd-wc-text">
+              Conception d'un système de navigation par "immersion niveaux" — chaque
+              session s'adapte en temps réel au rythme de l'utilisateur via un modèle
+              IA intégré. L'interface disparaît au profit du contenu : typographie
+              généreuse, micro-animations fonctionnelles, feedback haptique précis.<br /><br />
+              Architecture d'information repensée autour de 3 axes : acquisition,
+              révision contextuelle, et exposition passive. 47% d'amélioration de la
+              rétention mesurée en test bêta.
+            </p>
+          </div>
+
+          <div class="pd-white-card" data-card="2">
+            <p class="pd-wc-label">03 — PROCESS</p>
+            <h2 class="pd-wc-title">DE LA RECHERCHE<br />AU PIXEL.</h2>
+            <p class="pd-wc-text">
+              6 semaines de research utilisateur (interviews, shadowing, analyse
+              concurrentielle). Wireframes basse fidélité validés en 2 rounds de
+              tests. Prototype Figma haute fidélité avec interactions natives.<br /><br />
+              Livrable final : design system complet (120+ composants), guidelines
+              d'accessibilité WCAG AA, specs handoff développement via Zeplin.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: brief navigation (direct grid column) -->
+        <div class="pd-brief-nav">
+          <button class="pd-brief-btn active" data-target="0">
+            <span class="pd-brief-num">01</span>
+            <span class="pd-brief-name">Contexte</span>
+          </button>
+          <button class="pd-brief-btn" data-target="1">
+            <span class="pd-brief-num">02</span>
+            <span class="pd-brief-name">Solution</span>
+          </button>
+          <button class="pd-brief-btn" data-target="2">
+            <span class="pd-brief-num">03</span>
+            <span class="pd-brief-name">Process</span>
+          </button>
+        </div>
+
+        <!-- FULL-WIDTH PINK QUOTE -->
+        <div class="pd-pink-banner reveal">
+          <blockquote>
+            "High-contrast logic for a low-fidelity world. L'interface n'est pas
+            une décoration — c'est l'argument."
+          </blockquote>
+          <cite>— Armand Legros, Note de conception</cite>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== GALLERY ========== -->
+    <section class="pd-gallery">
+      <div class="pd-section-head reveal">
+        <h2 class="pd-section-title">VISUELS <span>→</span></h2>
+        <span class="pd-section-count">04 VISUELS</span>
+      </div>
+
+      <div class="pd-gallery-grid">
+        <div class="pd-gallery-item reveal" data-label="Exploded view — Toutes les pages">
+          <img src="images/showcase-projet_lexi.webp" alt="Showcase projet Lexi" />
+        </div>
+        <div class="pd-gallery-item reveal d1" data-label="Mascotte — Flamant voyageur">
+          <img src="images/lexi_mascotte_.webp" alt="Mascotte Lexi avec smartphone" />
+        </div>
+        <div class="pd-gallery-item reveal d1" data-label="Mascotte — Globe & langues">
+          <img src="images/Lexi_mascotte.webp" alt="Mascotte Lexi sur le globe" />
+        </div>
+        <div class="pd-gallery-item reveal d2" data-label="Pages du site — Vue d'ensemble">
+          <img src="images/lexi_pages_site.webp" alt="Pages du site Lexi" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== RELATED PROJECTS ========== -->
+    <section class="pd-related">
+      <div class="pd-related-head reveal">
+        <h2 class="pd-section-title">VOIR <span>AUSSI</span></h2>
+        <a href="projets.html" class="pd-related-link">Tous les projets →</a>
+      </div>
+
+      <div class="pd-related-grid">
+
+        <div class="pj-card reveal" style="--accent: var(--yellow)">
+          <div class="pj-accent-strip"></div>
+          <div class="pj-img">
+            <div class="pj-img-placeholder">DS</div>
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Dev &amp; Code</span>
+              <span class="pj-num">04</span>
+            </div>
+            <h3 class="pj-name">DESIGN<br />SYSTEM</h3>
+            <p class="pj-desc">Bibliothèque de composants open-source. 80+ éléments.</p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="projet.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal d1" style="--accent: var(--pink)">
+          <div class="pj-accent-strip"></div>
+          <div class="pj-img">
+            <div class="pj-img-placeholder">FB</div>
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Identité Visuelle</span>
+              <span class="pj-num">07</span>
+            </div>
+            <h3 class="pj-name">FINTECH<br />BRAND</h3>
+            <p class="pj-desc">Identité complète pour une startup fintech. Logo, charte.</p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="projet.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal d2" style="--accent: var(--purple)">
+          <div class="pj-accent-strip"></div>
+          <div class="pj-img">
+            <div class="pj-img-placeholder">FT</div>
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Design d'Interface</span>
+              <span class="pj-num">03</span>
+            </div>
+            <h3 class="pj-name">FITNESS<br />TRACKER</h3>
+            <p class="pj-desc">App mobile de suivi sportif. Interface gamifiée.</p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="projet.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== LIGHTBOX ========== -->
+    <div id="lightbox" role="dialog" aria-modal="true" aria-label="Visualiseur d'images">
+      <div class="lb-inner">
+        <div class="lb-img-wrap">
+          <img src="" alt="" />
+        </div>
+        <div class="lb-caption"></div>
+        <div class="lb-counter"></div>
+      </div>
+      <button class="lb-close" aria-label="Fermer">✕</button>
+      <button class="lb-prev" aria-label="Image précédente">←</button>
+      <button class="lb-next" aria-label="Image suivante">→</button>
+    </div>
+
+    <!-- ========== FOOTER ========== -->
+    <footer>
+      <div class="footer-main">
+        <div class="footer-brand">
+          <div class="footer-logo">ARMAND.LEGROS</div>
+          <div class="footer-version">// PORTFOLIO VERSION: 2025_VIBRANT</div>
+        </div>
+        <div class="footer-links">
+          <a href="#">TWITTER</a>
+          <a href="#">DRIBBBLE</a>
+          <a href="#">INSTAGRAM</a>
+          <a href="#">LINKEDIN</a>
+        </div>
+        <div class="footer-right">
+          <div class="footer-status">🌍 FR_REGION</div>
+          <div class="footer-dot"></div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">Design & développement par Armand Legros — Tous droits réservés pour l'inhabituel.</p>
+      </div>
+    </footer>
+
+    <script>
+      /* CURSOR */
+      const cur = document.getElementById("cursor");
+      const ring = document.getElementById("cursor-ring");
+      let mx = 0, my = 0, rx = 0, ry = 0;
+      document.addEventListener("mousemove", (e) => {
+        mx = e.clientX; my = e.clientY;
+        cur.style.left = mx + "px"; cur.style.top = my + "px";
+      });
+      (function animRing() {
+        rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+        ring.style.left = rx + "px"; ring.style.top = ry + "px";
+        requestAnimationFrame(animRing);
+      })();
+      document.querySelectorAll("a,button,.pd-gallery-item").forEach((el) => {
+        el.addEventListener("mouseenter", () => { cur.style.width="18px"; cur.style.height="18px"; ring.style.width="56px"; ring.style.height="56px"; });
+        el.addEventListener("mouseleave", () => { cur.style.width="10px"; cur.style.height="10px"; ring.style.width="38px"; ring.style.height="38px"; });
+      });
+
+      /* STICKY NAV */
+      const nav = document.getElementById("nav");
+      window.addEventListener("scroll", () => nav.classList.toggle("compact", window.scrollY > 60));
+
+      /* REVEAL */
+      const io = new IntersectionObserver(
+        (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }),
+        { threshold: 0 }
+      );
+      document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+      setTimeout(() => document.querySelectorAll(".reveal").forEach((el) => { if (!el.classList.contains("in")) io.observe(el); }), 80);
+
+      /* LIGHTBOX */
+      (function() {
+        var lb      = document.getElementById("lightbox");
+        var lbImg   = lb.querySelector(".lb-img-wrap img");
+        var lbCap   = lb.querySelector(".lb-caption");
+        var lbCount = lb.querySelector(".lb-counter");
+        var lbClose = lb.querySelector(".lb-close");
+        var lbPrev  = lb.querySelector(".lb-prev");
+        var lbNext  = lb.querySelector(".lb-next");
+
+        var items   = Array.from(document.querySelectorAll(".pd-gallery-item"));
+        var current = 0;
+
+        function openLb(idx) {
+          current = (idx + items.length) % items.length;
+          var item = items[current];
+          var img  = item.querySelector("img");
+          /* swap image — remove then re-add open class to re-trigger animation */
+          lb.classList.remove("open");
+          lbImg.src = img.src;
+          lbImg.alt = img.alt || "";
+          lbCap.textContent  = item.dataset.label || "";
+          lbCount.textContent = (current + 1) + " / " + items.length;
+          requestAnimationFrame(function() {
+            lb.classList.add("open");
+          });
+          document.body.style.overflow = "hidden";
+        }
+
+        function closeLb() {
+          lb.classList.remove("open");
+          document.body.style.overflow = "";
+        }
+
+        /* Click on gallery item → open */
+        items.forEach(function(item, idx) {
+          item.addEventListener("click", function() { openLb(idx); });
+        });
+
+        /* Controls */
+        lbClose.addEventListener("click", function(e) { e.stopPropagation(); closeLb(); });
+        lbPrev.addEventListener("click",  function(e) { e.stopPropagation(); openLb(current - 1); });
+        lbNext.addEventListener("click",  function(e) { e.stopPropagation(); openLb(current + 1); });
+
+        /* Click on backdrop (outside .lb-inner) to close */
+        lb.addEventListener("click", function(e) {
+          if (e.target === lb) closeLb();
+        });
+
+        /* Keyboard navigation */
+        document.addEventListener("keydown", function(e) {
+          if (!lb.classList.contains("open")) return;
+          if (e.key === "Escape")      closeLb();
+          if (e.key === "ArrowLeft")   openLb(current - 1);
+          if (e.key === "ArrowRight")  openLb(current + 1);
+        });
+
+        /* Cursor ring also grows for lightbox buttons */
+        [lbClose, lbPrev, lbNext].forEach(function(btn) {
+          btn.addEventListener("mouseenter", function() { cur.style.width="18px"; cur.style.height="18px"; ring.style.width="56px"; ring.style.height="56px"; });
+          btn.addEventListener("mouseleave", function() { cur.style.width="10px"; cur.style.height="10px"; ring.style.width="38px"; ring.style.height="38px"; });
+        });
+      })();
+
+      /* BRIEF NAV — single card switcher */
+      (function() {
+        const btns  = document.querySelectorAll(".pd-brief-btn");
+        const cards = document.querySelectorAll(".pd-white-card");
+
+        btns.forEach(function(btn) {
+          btn.addEventListener("click", function() {
+            var idx = parseInt(btn.getAttribute("data-target"), 10);
+
+            /* update buttons */
+            btns.forEach(function(b) { b.classList.remove("active"); });
+            btn.classList.add("active");
+
+            /* update cards — remove active first, then add after 1 frame to re-trigger animation */
+            cards.forEach(function(c) { c.classList.remove("active"); });
+            requestAnimationFrame(function() {
+              cards[idx].classList.add("active");
+            });
+          });
+        });
+      })();
+    </script>
+  
+  <script id="burger-js">
+  (function(){
+    var burger = document.getElementById('nav-burger');
+    var menu   = document.getElementById('mobile-menu');
+    var close  = document.getElementById('mob-close');
+    function openMenu()  { menu.classList.add('open'); burger.classList.add('open'); menu.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+    function closeMenu() { menu.classList.remove('open'); burger.classList.remove('open'); menu.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+    burger.addEventListener('click', function(){ menu.classList.contains('open') ? closeMenu() : openMenu(); });
+    close.addEventListener('click', closeMenu);
+    menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeMenu(); });
+  })();
+  </script>
+  </body>
+</html>

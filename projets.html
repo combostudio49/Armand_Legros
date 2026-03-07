@@ -1,0 +1,1284 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projets — Armand Legros</title>
+    <meta
+      name="description"
+      content="Tous les projets d'Armand Legros — Design, Dev & Identité."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ================================================
+         CSS VARIABLES & RESET
+      ================================================ */
+      :root {
+        --black: #000000;
+        --white: #ffffff;
+        --purple: #5d3fd3;
+        --yellow: #dfff00;
+        --pink: #ff69b4;
+        --dark: #18181b;
+        --gray-800: #27272a;
+        --gray-600: #52525b;
+        --gray-500: #71717a;
+        --gray-400: #a1a1aa;
+        --border: 4px;
+        --font-d: "Bebas Neue", sans-serif;
+        --font-m: "Space Mono", monospace;
+      }
+
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        background: var(--black);
+        color: var(--white);
+        font-family: var(--font-m);
+        overflow-x: hidden;
+        cursor: none;
+      }
+
+      a, button { cursor: none; }
+      img { display: block; max-width: 100%; }
+
+      /* ================================================
+         CUSTOM CURSOR
+      ================================================ */
+      #cursor {
+        position: fixed;
+        width: 10px; height: 10px;
+        background: var(--yellow);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition: width 0.2s ease, height 0.2s ease;
+        mix-blend-mode: difference;
+      }
+
+      #cursor-ring {
+        position: fixed;
+        width: 38px; height: 38px;
+        border: 2px solid var(--yellow);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%, -50%);
+        mix-blend-mode: difference;
+      }
+
+      body:has(a:hover) #cursor,
+      body:has(button:hover) #cursor {
+        width: 18px; height: 18px;
+      }
+
+      /* ================================================
+         REVEAL ANIMATION
+      ================================================ */
+      .reveal {
+        opacity: 0;
+        transform: translateY(32px);
+        transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .reveal.in { opacity: 1; transform: translateY(0); }
+      .d1 { transition-delay: 0.08s; }
+      .d2 { transition-delay: 0.16s; }
+      .d3 { transition-delay: 0.24s; }
+
+      /* ================================================
+         NAVIGATION
+      ================================================ */
+      #nav {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 200;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 48px;
+        background: var(--black);
+        border-bottom: 4px solid var(--white);
+        transition: padding 0.3s ease;
+      }
+
+      #nav.compact { padding: 10px 48px; }
+
+      .nav-logo {
+        display: flex; align-items: center; gap: 12px;
+        text-decoration: none;
+      }
+
+      .nav-logo-box {
+        width: 44px; height: 44px;
+        background: var(--purple);
+        border: 2px solid var(--white);
+        display: flex; align-items: center; justify-content: center;
+        font-family: var(--font-d);
+        font-size: 20px;
+        color: var(--white);
+        flex-shrink: 0;
+      }
+
+      .nav-logo-title {
+        display: flex; flex-direction: column; gap: 2px;
+      }
+
+      .nav-logo-text {
+        font-family: var(--font-d);
+        font-size: 26px;
+        color: var(--white);
+        letter-spacing: 0.02em;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .nav-logo-name {
+        font-family: var(--font-m);
+        font-size: 9px;
+        color: var(--white);
+        opacity: 0.5;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 32px;
+      }
+
+      .nav-links a {
+        font-weight: 700;
+        font-size: 11px;
+        color: var(--white);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: color 0.2s ease;
+      }
+
+      .nav-links a:hover { color: var(--yellow); }
+      .nav-links a.active { color: var(--yellow); }
+
+      .nav-cta {
+        background: var(--pink);
+        border: 3px solid var(--black);
+        box-shadow: 4px 4px 0 var(--black);
+        padding: 10px 20px;
+        font-family: var(--font-m);
+        font-weight: 700;
+        font-size: 11px;
+        color: var(--black);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .nav-cta:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 6px 6px 0 var(--black);
+      }
+
+      /* ================================================
+         PAGE HEADER
+      ================================================ */
+      .page-header {
+        padding: 140px 80px 48px;
+        background: var(--black);
+        border-bottom: 4px solid var(--white);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .page-header::before {
+        content: "18";
+        position: absolute;
+        right: 60px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-family: var(--font-d);
+        font-size: clamp(180px, 20vw, 320px);
+        color: var(--white);
+        opacity: 0.04;
+        line-height: 1;
+        pointer-events: none;
+        user-select: none;
+      }
+
+      .page-header-badge {
+        display: inline-flex;
+        border: 2px solid var(--white);
+        padding: 5px 12px;
+        font-family: var(--font-m);
+        font-weight: 700;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--gray-400);
+        margin-bottom: 24px;
+      }
+
+      .page-header-title {
+        font-family: var(--font-d);
+        font-size: clamp(80px, 12vw, 180px);
+        color: var(--white);
+        text-transform: uppercase;
+        line-height: 0.88;
+        letter-spacing: -0.01em;
+      }
+
+      .page-header-title span { color: var(--yellow); }
+
+      .page-header-sub {
+        margin-top: 32px;
+        font-size: 12px;
+        color: var(--gray-400);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        line-height: 1.8;
+        max-width: 480px;
+      }
+
+      /* ================================================
+         FILTERS
+      ================================================ */
+      .proj-filters-bar {
+        padding: 40px 80px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        background: var(--black);
+        position: sticky;
+        top: 76px;
+        z-index: 100;
+      }
+
+      .pf-btn {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 8px;
+        background: transparent;
+        border: 3px solid var(--accent, var(--white));
+        padding: 10px 28px;
+        font-family: var(--font-d);
+        font-size: 26px;
+        color: var(--accent, var(--white));
+        opacity: 0.45;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        cursor: none;
+        transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease,
+                    box-shadow 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+      }
+
+      .pf-btn .pf-count {
+        font-family: var(--font-m);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0;
+        color: inherit;
+        opacity: 0.7;
+        align-self: center;
+      }
+
+      .pf-btn:hover {
+        opacity: 0.8;
+        transform: translate(-2px, -2px);
+        box-shadow: 4px 4px 0 var(--accent, var(--white));
+      }
+
+      .pf-btn.active {
+        background: var(--accent, var(--white));
+        border-color: var(--accent, var(--white));
+        color: var(--black);
+        opacity: 1;
+        box-shadow: 5px 5px 0 var(--accent, var(--white));
+        transform: translate(-2px, -2px);
+      }
+
+      .pf-btn.active .pf-count {
+        opacity: 0.7;
+        color: var(--black);
+      }
+
+      /* ================================================
+         PROJECTS GRID
+      ================================================ */
+      .proj-page-section {
+        padding: 64px 80px 120px;
+        background: var(--black);
+      }
+
+      .proj-page-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 56px;
+      }
+
+      /* ---- CARD — dark bg, neobrutalist lift ---- */
+      .pj-card {
+        border: 2px solid var(--gray-800);
+        background: var(--dark);
+        overflow: hidden;
+        cursor: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .pj-card:hover {
+        transform: translate(-4px, -4px);
+        box-shadow: 8px 8px 0 var(--accent, var(--purple));
+        border-color: var(--accent, var(--purple));
+      }
+
+      /* Top color accent strip */
+      .pj-accent {
+        height: 5px;
+        background: var(--accent, var(--purple));
+        flex-shrink: 0;
+      }
+
+      /* Card image zone */
+      .pj-img {
+        aspect-ratio: 4/3;
+        background: var(--gray-800);
+        overflow: hidden;
+        position: relative;
+        flex-shrink: 0;
+        border-bottom: 2px solid var(--gray-800);
+      }
+
+      /* Dark overlay that fades on hover */
+      .pj-img::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--black);
+        opacity: 0.28;
+        transition: opacity 0.35s ease;
+        pointer-events: none;
+      }
+
+      .pj-card:hover .pj-img::after { opacity: 0; }
+
+      .pj-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+
+      .pj-card:hover .pj-img img { transform: scale(1.06); }
+
+      /* Placeholder (no image) */
+      .pj-img-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-d);
+        font-size: clamp(40px, 5vw, 72px);
+        color: var(--gray-600);
+        letter-spacing: -0.02em;
+        transition: color 0.3s ease;
+      }
+
+      .pj-card:hover .pj-img-placeholder {
+        color: var(--accent, var(--purple));
+      }
+
+      /* Card body */
+      .pj-body {
+        padding: 14px 16px 16px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        gap: 6px;
+      }
+
+      .pj-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .pj-type-tag {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--accent, var(--purple));
+        border: 1.5px solid var(--accent, var(--purple));
+        padding: 3px 8px;
+        line-height: 1;
+      }
+
+      .pj-num { display: none; }
+      .pj-card:hover .pj-num { display: none; }
+
+      .pj-name {
+        font-family: var(--font-d);
+        font-size: clamp(22px, 2.2vw, 36px);
+        color: var(--white);
+        text-transform: uppercase;
+        line-height: 0.95;
+      }
+
+      .pj-desc {
+        font-size: 11px;
+        color: var(--gray-400);
+        line-height: 1.5;
+        flex: 1;
+      }
+
+      .pj-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 10px;
+        border-top: 1px solid var(--gray-800);
+        margin-top: 4px;
+      }
+
+      .pj-year {
+        font-size: 10px;
+        color: var(--gray-600);
+        letter-spacing: 1px;
+      }
+
+      .pj-link {
+        font-weight: 700;
+        font-size: 10px;
+        color: var(--white);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        border-bottom: 1px solid var(--gray-600);
+        transition: letter-spacing 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+      }
+
+      .pj-link:hover {
+        letter-spacing: 0.14em;
+        color: var(--accent, var(--yellow));
+        border-color: var(--accent, var(--yellow));
+      }
+
+      /* Hidden state for filter */
+      .pj-card.hidden {
+        display: none;
+      }
+
+      /* ================================================
+         EMPTY STATE
+      ================================================ */
+      .proj-empty {
+        display: none;
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 80px 24px;
+        font-size: 14px;
+        color: var(--gray-600);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .proj-empty.visible { display: block; }
+
+      /* ================================================
+         FOOTER
+      ================================================ */
+      footer {
+        background: var(--dark);
+        border-top: 4px solid var(--white);
+        padding: 64px 80px 40px;
+      }
+
+      .footer-main {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: 48px;
+      }
+
+      .footer-logo {
+        font-family: var(--font-d);
+        font-size: clamp(40px, 6vw, 80px);
+        color: var(--yellow);
+        line-height: 1;
+        letter-spacing: -0.02em;
+      }
+
+      .footer-version {
+        font-size: 10px;
+        color: var(--gray-600);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-top: 12px;
+      }
+
+      .footer-links {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-end;
+      }
+
+      .footer-links a {
+        font-weight: 700;
+        font-size: 11px;
+        color: var(--gray-400);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: color 0.2s ease;
+      }
+
+      .footer-links a:hover { color: var(--white); }
+
+      .footer-right {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 12px;
+      }
+
+      .footer-status {
+        font-size: 10px;
+        color: var(--gray-600);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+      }
+
+      .footer-dot {
+        width: 10px; height: 10px;
+        background: #22c55e;
+        border-radius: 50%;
+        box-shadow: 0 0 8px #22c55e;
+        animation: blink 2s ease-in-out infinite;
+      }
+
+      @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+
+      .footer-bottom {
+        border-top: 1px solid var(--gray-800);
+        padding-top: 24px;
+      }
+
+      .footer-copy {
+        font-size: 10px;
+        color: var(--gray-600);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        line-height: 1.8;
+      }
+
+      /* ================================================
+         RESPONSIVE
+      ================================================ */
+      @media (max-width: 900px) {
+        #nav { padding: 10px 20px; }
+        .nav-links { display: none; }
+        .nav-logo-box { width: 34px; height: 34px; font-size: 15px; }
+        .nav-logo-text { font-size: 18px; }
+        .nav-cta { padding: 8px 14px; font-size: 10px; white-space: nowrap; box-shadow: 2px 2px 0 var(--black); }
+
+        .page-header { padding: 100px 24px 56px; }
+        .page-header::before { display: none; }
+        .page-header-title { font-size: clamp(60px, 18vw, 120px); }
+
+        .proj-filters-bar {
+          padding: 20px 16px;
+          top: 62px;
+          gap: 8px;
+          justify-content: center;
+          flex-wrap: wrap;
+        }
+        .pf-btn { font-size: 20px; padding: 8px 18px; }
+
+        .proj-page-section { padding: 32px 16px 80px; }
+        .proj-page-grid {
+          grid-template-columns: 1fr;
+          gap: 32px;
+        }
+
+        footer { padding: 48px 24px 32px; }
+        .footer-main { flex-direction: column; gap: 24px; align-items: flex-start; }
+      }
+
+      @media (min-width: 901px) and (max-width: 1200px) {
+        .proj-page-grid { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+      }
+    
+  /* ─────────────────────────────────────────
+     BURGER MENU (mobile ≤900px)
+  ───────────────────────────────────────── */
+  #nav-burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    margin-left: auto;
+  }
+  #nav-burger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--white);
+    transition: transform .25s, opacity .25s;
+    border-radius: 1px;
+  }
+  #nav-burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  #nav-burger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  #nav-burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  #mobile-menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    z-index: 9998;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+  }
+  #mobile-menu.open { display: flex; }
+  #mob-close {
+    position: absolute;
+    top: 24px;
+    right: 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--white);
+    font-size: 32px;
+    font-family: var(--font-mono);
+    line-height: 1;
+  }
+  .mob-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+  .mob-links a {
+    font-family: var(--font-mono);
+    font-size: clamp(14px, 4.5vw, 18px);
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    transition: color .2s;
+  }
+  .mob-links a:hover { color: var(--yellow); }
+  .mob-cta-link {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--white) !important;
+    text-decoration: none;
+    border: 1.5px solid var(--white);
+    padding: 12px 28px;
+    box-shadow: 4px 4px 0 var(--white);
+    transition: transform .2s, box-shadow .2s;
+    margin-top: 8px;
+  }
+  .mob-cta-link:hover {
+    transform: translate(-2px,-2px);
+    box-shadow: 6px 6px 0 var(--white);
+  }
+  @media (max-width: 900px) {
+    #nav-burger { display: flex; }
+  }
+  </style>
+  </head>
+  <body>
+    <div id="cursor"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- ========== NAVIGATION ========== -->
+    <nav id="nav">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-box">AL</div>
+        <div class="nav-logo-title">
+          <span class="nav-logo-text">UX/UI DESIGNER</span>
+          <span class="nav-logo-name">Armand Legros</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html#about">[ QUI JE SUIS ]</a></li>
+        <li><a href="projets.html" class="active">[ MES PROJETS ]</a></li>
+        <li><a href="index.html#services">[ CE QUE JE FAIS ]</a></li>
+        <li><a href="index.html#contact">[ PARLONS ]</a></li>
+      </ul>
+      <a href="index.html#contact" class="nav-cta">Démarrer un projet</a>
+    
+      <button id="nav-burger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+
+    <!-- ───── MOBILE MENU ───── -->
+    <div id="mobile-menu" aria-hidden="true">
+      <button id="mob-close" aria-label="Fermer">&#x2715;</button>
+      <nav class="mob-links">
+        <a href="index.html#about">[ QUI JE SUIS ]</a>
+        <a href="projets.html">[ MES PROJETS ]</a>
+        <a href="index.html#services">[ CE QUE JE FAIS ]</a>
+        <a href="index.html#contact">[ PARLONS ]</a>
+      </nav>
+      <a href="index.html#contact" class="mob-cta-link">Démarrer un projet</a>
+    </div>
+
+    <!-- ========== PAGE HEADER ========== -->
+    <header class="page-header">
+      <h1 class="page-header-title reveal">
+        MES <span>PROJETS</span>
+      </h1>
+      <p class="page-header-sub reveal d1">
+        18 projets. 3 univers.<br />1 obsession : que ça soit beau et que ça marche.
+      </p>
+    </header>
+
+    <!-- ========== FILTERS ========== -->
+    <div class="proj-filters-bar">
+      <button class="pf-btn active" data-filter="all" style="--accent: var(--white)">
+        TOUS <span class="pf-count">18</span>
+      </button>
+      <button class="pf-btn" data-filter="interface" style="--accent: var(--purple)">
+        DESIGN D'INTERFACE <span class="pf-count">11</span>
+      </button>
+      <button class="pf-btn" data-filter="dev" style="--accent: var(--yellow)">
+        DEV &amp; CODE <span class="pf-count">03</span>
+      </button>
+      <button class="pf-btn" data-filter="identite" style="--accent: var(--pink)">
+        IDENTITÉ VISUELLE <span class="pf-count">04</span>
+      </button>
+    </div>
+
+    <!-- ========== PROJECTS GRID ========== -->
+    <section class="proj-page-section">
+      <div class="proj-page-grid" id="projGrid">
+
+        <!-- ── DESIGN D'INTERFACE (purple) ── -->
+        <div class="pj-card reveal" data-type="interface" style="--accent: var(--purple)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <img src="images/hero_website_lexi.webp" alt="Lexi Langue — Site Web" />
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Design d'Interface</span>
+              <span class="pj-num">01</span>
+            </div>
+            <h2 class="pj-name">LEXI<br />LANGUE</h2>
+            <p class="pj-desc">
+              App d'apprentissage des langues<br />avec IA. UX fluide pour une<br />acquisition immersive.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="projet.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal d1" data-type="interface" style="--accent: var(--purple)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <img src="images/catalogue_hectoretvito.webp" alt="Hector et Vito — Design d'Interface" />
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Design d'Interface</span>
+              <span class="pj-num">02</span>
+            </div>
+            <h2 class="pj-name">HECTOR<br />&amp; VITO</h2>
+            <p class="pj-desc">
+              Marque de cosmétiques masculins.<br />UI digitale pour catalogue,<br />fiches produit &amp; collection.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="hectoretvito.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal d2" data-type="interface" style="--accent: var(--purple)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <img src="images/hero_eva_air.webp" alt="Eva Air — Site Web" />
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Design d'Interface</span>
+              <span class="pj-num">03</span>
+            </div>
+            <h2 class="pj-name">EVA<br />AIR</h2>
+            <p class="pj-desc">
+              Refonte du site d'une compagnie<br />aérienne taïwanaise. UX épurée<br />pour l'expérience voyage.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="avion.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal" data-type="interface" style="--accent: var(--purple)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <img src="images/hero_site_meubles.webp" alt="Site Meubles — Design d'Interface" />
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Design d'Interface</span>
+              <span class="pj-num">04</span>
+            </div>
+            <h2 class="pj-name">SITE<br />MEUBLES</h2>
+            <p class="pj-desc">
+              E-commerce de mobilier haut<br />de gamme. Navigation intuitive<br />et visuels immersifs.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="meubles.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal d1" data-type="interface" style="--accent: var(--purple)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <img src="images/hero_website_piscine.webp" alt="Site Piscines — Design d'Interface" />
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Design d'Interface</span>
+              <span class="pj-num">05</span>
+            </div>
+            <h2 class="pj-name">SITE<br />PISCINES</h2>
+            <p class="pj-desc">
+              Site vitrine pour pisciniste.<br />Mise en valeur des réalisations<br />et parcours client fluide.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="piscines.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal d2" data-type="interface" style="--accent: var(--purple)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <img src="images/hero_site_immobilier.webp" alt="Site Immobilier — Design d'Interface" />
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Design d'Interface</span>
+              <span class="pj-num">06</span>
+            </div>
+            <h2 class="pj-name">AGENCE<br />IMMOBILIER</h2>
+            <p class="pj-desc">
+              Site d'agence immobilière.<br />Recherche de biens optimisée<br />et tunnel de contact performant.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="immobilier.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal" data-type="interface" style="--accent: var(--purple)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <img src="images/accueil_app_numethics.webp" alt="NumEthics — App Design" />
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Design d'Interface</span>
+              <span class="pj-num">07</span>
+            </div>
+            <h2 class="pj-name">NUM<br />ETHICS</h2>
+            <p class="pj-desc">
+              Application d'éco-numérique.<br />Dashboard d'impact carbone<br />et conseils personnalisés.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="numethics.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal d1" data-type="interface" style="--accent: var(--purple)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <img src="images/application_accueil_tadaglou.webp" alt="Tadaglou — App Design" />
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Design d'Interface</span>
+              <span class="pj-num">08</span>
+            </div>
+            <h2 class="pj-name">TADA<br />GLOU</h2>
+            <p class="pj-desc">
+              Application mobile ludique.<br />Interface colorée et animée<br />pour un public jeune adulte.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="tadaglou.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal d2" data-type="interface" style="--accent: var(--purple)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <img src="images/hero_website_le_twist.webp" alt="Le Twist — Site Web" />
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Design d'Interface</span>
+              <span class="pj-num">09</span>
+            </div>
+            <h2 class="pj-name">LE<br />TWIST</h2>
+            <p class="pj-desc">
+              Site pour bar à cocktails.<br />Ambiance nocturne, carte<br />interactive et réservations.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="twist.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal" data-type="interface" style="--accent: var(--purple)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <img src="images/hero_website_peuty.webp" alt="Peuty — Site Web" />
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Design d'Interface</span>
+              <span class="pj-num">10</span>
+            </div>
+            <h2 class="pj-name">PEUTY</h2>
+            <p class="pj-desc">
+              Site e-commerce mode.<br />Univers élégant et conversion<br />optimisée pour la boutique.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="peuty.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal d1" data-type="interface" style="--accent: var(--purple)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <img src="images/app_twitch.webp" alt="Twitch — App Redesign" />
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Design d'Interface</span>
+              <span class="pj-num">11</span>
+            </div>
+            <h2 class="pj-name">TWITCH<br />REDESIGN</h2>
+            <p class="pj-desc">
+              Concept de refonte Twitch.<br />Expérience streamers &amp; viewers<br />revue de fond en comble.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="twitch.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── DEV & CODE (yellow) ── -->
+        <div class="pj-card reveal" data-type="dev" style="--accent: var(--yellow)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <div class="pj-img-placeholder">CASE_004</div>
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Dev &amp; Code</span>
+              <span class="pj-num">04</span>
+            </div>
+            <h2 class="pj-name">DESIGN<br />SYSTEM</h2>
+            <p class="pj-desc">
+              Bibliothèque de composants<br />open-source. 80+ éléments,<br />tokens & documentation.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="projet.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal d1" data-type="dev" style="--accent: var(--yellow)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <div class="pj-img-placeholder">CASE_005</div>
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Dev &amp; Code</span>
+              <span class="pj-num">05</span>
+            </div>
+            <h2 class="pj-name">E-COMMERCE<br />HEADLESS</h2>
+            <p class="pj-desc">
+              Boutique Shopify headless.<br />Performances maximales,<br />expérience premium.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2023</span>
+              <a href="projet.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal d2" data-type="dev" style="--accent: var(--yellow)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <div class="pj-img-placeholder">CASE_006</div>
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Dev &amp; Code</span>
+              <span class="pj-num">06</span>
+            </div>
+            <h2 class="pj-name">PORTFOLIO<br />WEBGL</h2>
+            <p class="pj-desc">
+              Portfolio interactif avec<br />animations WebGL 3D.<br />100/100 Lighthouse.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2023</span>
+              <a href="projet.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── IDENTITÉ VISUELLE (pink) ── -->
+        <div class="pj-card reveal" data-type="identite" style="--accent: var(--pink)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <img src="images/logotype_nozayselectauto.webp" alt="Nozay Select Auto — Logotype" />
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Identité Visuelle</span>
+              <span class="pj-num">07</span>
+            </div>
+            <h2 class="pj-name">NOZAY<br />SELECT AUTO</h2>
+            <p class="pj-desc">
+              Identité visuelle complète<br />pour un concessionnaire auto.<br />Logo, charte, goodies.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="nozay.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal d1" data-type="identite" style="--accent: var(--pink)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <img src="images/ouestcar.webp" alt="Ouest Car — Identité Visuelle" style="object-fit: contain; padding: 20px;" />
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Identité Visuelle</span>
+              <span class="pj-num">08</span>
+            </div>
+            <h2 class="pj-name">OUEST<br />CAR</h2>
+            <p class="pj-desc">
+              Identité visuelle complète<br />pour un garage automobile.<br />Logo, charte & signalétique.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="ouestcar.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal d2" data-type="identite" style="--accent: var(--pink)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <img src="images/boite_de_jeux_face_brainpanic.webp" alt="Brain Panic — Identité Visuelle" />
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Identité Visuelle</span>
+              <span class="pj-num">17</span>
+            </div>
+            <h2 class="pj-name">BRAIN<br />PANIC</h2>
+            <p class="pj-desc">
+              Identité visuelle pour un jeu<br />de société. Packaging, rules<br />&amp; univers graphique nerveux.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="brainpanic.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="pj-card reveal" data-type="identite" style="--accent: var(--pink)">
+          <div class="pj-accent"></div>
+          <div class="pj-img">
+            <img src="images/campagne_champtoce_sur_loire.webp" alt="Borderon — Identité Visuelle" />
+          </div>
+          <div class="pj-body">
+            <div class="pj-meta">
+              <span class="pj-type-tag">Identité Visuelle</span>
+              <span class="pj-num">18</span>
+            </div>
+            <h2 class="pj-name">BORDERON<br />&amp; FILS</h2>
+            <p class="pj-desc">
+              Identité visuelle &amp; campagne<br />print pour une commune.<br />Affichage, brochure &amp; charte.
+            </p>
+            <div class="pj-footer">
+              <span class="pj-year">2024</span>
+              <a href="borderon.html" class="pj-link">VOIR LE PROJET →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="proj-empty" id="projEmpty">
+          Aucun projet dans cette catégorie.
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer>
+      <div class="footer-main">
+        <div class="footer-brand">
+          <div class="footer-logo">ARMAND.LEGROS</div>
+          <div class="footer-version">// PORTFOLIO VERSION: 2025_VIBRANT</div>
+        </div>
+        <div class="footer-links">
+          <a href="#">TWITTER</a>
+          <a href="#">DRIBBBLE</a>
+          <a href="#">INSTAGRAM</a>
+          <a href="#">LINKEDIN</a>
+        </div>
+        <div class="footer-right">
+          <div class="footer-status">🌍 FR_REGION</div>
+          <div class="footer-dot"></div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">
+          Design & développement par Armand Legros — Tous droits réservés pour l'inhabituel.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      /* CUSTOM CURSOR */
+      const cur = document.getElementById("cursor");
+      const ring = document.getElementById("cursor-ring");
+      let mx = 0, my = 0, rx = 0, ry = 0;
+
+      document.addEventListener("mousemove", (e) => {
+        mx = e.clientX; my = e.clientY;
+        cur.style.left = mx + "px";
+        cur.style.top = my + "px";
+      });
+
+      (function animRing() {
+        rx += (mx - rx) * 0.12;
+        ry += (my - ry) * 0.12;
+        ring.style.left = rx + "px";
+        ring.style.top = ry + "px";
+        requestAnimationFrame(animRing);
+      })();
+
+      document.querySelectorAll("a,button").forEach((el) => {
+        el.addEventListener("mouseenter", () => {
+          cur.style.width = "18px"; cur.style.height = "18px";
+          ring.style.width = "56px"; ring.style.height = "56px";
+        });
+        el.addEventListener("mouseleave", () => {
+          cur.style.width = "10px"; cur.style.height = "10px";
+          ring.style.width = "38px"; ring.style.height = "38px";
+        });
+      });
+
+      /* STICKY NAV */
+      const nav = document.getElementById("nav");
+      window.addEventListener("scroll", () => {
+        nav.classList.toggle("compact", window.scrollY > 60);
+      });
+
+      /* SCROLL REVEAL */
+      const io = new IntersectionObserver(
+        (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }),
+        { threshold: 0 }
+      );
+      document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+      /* Fallback: ensure above-fold reveals fire immediately */
+      setTimeout(() => document.querySelectorAll(".reveal").forEach((el) => { if (!el.classList.contains("in")) io.observe(el); }), 100);
+
+      /* FILTER */
+      const filterBtns = document.querySelectorAll(".pf-btn");
+      const cards = document.querySelectorAll(".pj-card");
+      const emptyState = document.getElementById("projEmpty");
+
+      filterBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const filter = btn.dataset.filter;
+
+          filterBtns.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          let visible = 0;
+          cards.forEach((card) => {
+            const show = filter === "all" || card.dataset.type === filter;
+            card.classList.toggle("hidden", !show);
+            if (show) visible++;
+          });
+
+          emptyState.classList.toggle("visible", visible === 0);
+        });
+      });
+    </script>
+  
+  <script id="burger-js">
+  (function(){
+    var burger = document.getElementById('nav-burger');
+    var menu   = document.getElementById('mobile-menu');
+    var close  = document.getElementById('mob-close');
+    function openMenu()  { menu.classList.add('open'); burger.classList.add('open'); menu.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+    function closeMenu() { menu.classList.remove('open'); burger.classList.remove('open'); menu.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+    burger.addEventListener('click', function(){ menu.classList.contains('open') ? closeMenu() : openMenu(); });
+    close.addEventListener('click', closeMenu);
+    menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeMenu(); });
+  })();
+  </script>
+  </body>
+</html>
